@@ -1,16 +1,15 @@
+import { api } from '@/src/api/api';
 import { MaterialIcons } from '@expo/vector-icons';
-import axios from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    Platform,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  FlatList,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View
 } from 'react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { styles } from '../../src/theme/styles';
@@ -34,40 +33,34 @@ export default function AlunosPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const API_BASE = Platform.select({
-    android: 'http://10.0.2.2:4000/api',
-    ios: 'http://localhost:4000/api',
-    default: 'http://192.168.1.40:4000/api',
-  })!;
-
   const authHeader = {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  // ---------- LISTAR ALUNOS ----------
+  // Listar os alunos
   const fetchAlunos = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_BASE}/users/students`, authHeader);
+      const res = await api.get('/api/users/students', authHeader);
       setAlunos(res.data);
     } catch (err: any) {
-      console.error('❌ ERRO AO BUSCAR ALUNOS:', err?.response?.data || err);
+      console.error('ERRO AO BUSCAR ALUNOS:', err?.response?.data || err);
       Alert.alert('Erro', 'Erro ao carregar alunos');
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, token]);
+  }, [token]);
 
   useEffect(() => {
     fetchAlunos();
   }, [fetchAlunos]);
 
-  // ---------- CRIAR ALUNO ----------
+  // Criar os alunos
   const handleCreate = async () => {
     if (!username || !password) return;
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/users`,
+      const res = await api.post(
+        `/api/users`,
         { username, password, role: 'student' },
         authHeader
       );
@@ -79,7 +72,7 @@ export default function AlunosPage() {
       
       Alert.alert('Sucesso', 'Aluno criado com sucesso');
     } catch (err: any) {
-      console.error('❌ ERRO AO CRIAR ALUNO:', err?.response?.data || err);
+      console.error('ERRO AO CRIAR ALUNO:', err?.response?.data || err);
       Alert.alert(
         'Erro',
         err?.response?.data?.error || 'Erro ao criar aluno'
@@ -87,13 +80,13 @@ export default function AlunosPage() {
     }
   };
 
-  // ---------- EDITAR ALUNO ----------
+  // Edição de Aluno
   const handleEdit = async () => {
     if (!selectedAluno) return;
 
     try {
-      const res = await axios.put(
-        `${API_BASE}/users/${selectedAluno.id}`,
+      const res = await api.put(
+        `/api/users/${selectedAluno.id}`,
         { username, password },
         authHeader
       );
@@ -108,7 +101,7 @@ export default function AlunosPage() {
       
       Alert.alert('Sucesso', 'Aluno atualizado com sucesso');
     } catch (err: any) {
-      console.error('❌ ERRO AO EDITAR ALUNO:', err?.response?.data || err);
+      console.error('ERRO AO EDITAR ALUNO:', err?.response?.data || err);
       Alert.alert(
         'Erro',
         err?.response?.data?.error || 'Erro ao editar aluno'
@@ -116,15 +109,15 @@ export default function AlunosPage() {
     }
   };
 
-  // ---------- DELETE ALUNO ----------
+  // Apagar o aluno
   const handleDelete = async () => {
     if (!selectedAluno) return;
 
     try {
-      console.log('🗑️ DELETANDO ALUNO ID:', selectedAluno.id);
+      console.log('DELETANDO ALUNO ID:', selectedAluno.id);
 
-      await axios.delete(
-        `${API_BASE}/users/${selectedAluno.id}`,
+      await api.delete(
+        `/api/users/${selectedAluno.id}`,
         authHeader
       );
 
@@ -138,7 +131,7 @@ export default function AlunosPage() {
 
       Alert.alert('Sucesso', 'Aluno deletado com sucesso');
     } catch (err: any) {
-      console.error('❌ ERRO DELETE ALUNO', err?.response?.data || err);
+      console.error('ERRO DELETAR ALUNO', err?.response?.data || err);
       Alert.alert(
         'Erro',
         err?.response?.data?.error || 'Erro ao deletar aluno'

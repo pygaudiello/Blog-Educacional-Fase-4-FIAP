@@ -1,16 +1,15 @@
+import { api } from '@/src/api/api';
 import { MaterialIcons } from '@expo/vector-icons';
-import axios from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
-  Platform,
   Pressable,
   ScrollView,
   Text,
   TextInput,
-  View,
+  View
 } from 'react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { styles } from '../../src/theme/styles';
@@ -34,27 +33,21 @@ export default function ProfessoresPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const API_BASE = Platform.select({
-    android: 'http://10.0.2.2:4000/api',
-    ios: 'http://localhost:4000/api',
-    default: 'http://192.168.1.40:4000/api',
-  })!;
-
   const authHeader = {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  // ---------- LISTAR ----------
+  // Listar professores
   const fetchProfessores = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_BASE}/users/teachers`, authHeader);
+      const res = await api.get('/api/users/teachers', authHeader);
       setProfessores(res.data);
     } catch {
       Alert.alert('Erro', 'Erro ao carregar professores');
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, token]);
+  }, [token]);
 
   useEffect(() => {
     fetchProfessores();
@@ -65,8 +58,8 @@ export default function ProfessoresPage() {
     if (!username || !password) return;
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/users`,
+      const res = await api.post(
+        `/api/users`,
         { username, password, role: 'teacher' },
         authHeader
       );
@@ -80,13 +73,13 @@ export default function ProfessoresPage() {
     }
   };
 
-  // ---------- EDITAR ----------
+  // Edição
   const handleEdit = async () => {
     if (!selectedProfessor) return;
 
     try {
-      const res = await axios.put(
-        `${API_BASE}/users/${selectedProfessor.id}`,
+      const res = await api.put(
+        `/api/users/${selectedProfessor.id}`,
         { username, password },
         authHeader
       );
@@ -103,15 +96,15 @@ export default function ProfessoresPage() {
     }
   };
 
-  // ---------- DELETE (COM VALIDAÇÃO VISUAL + LOG) ----------
+  // Deletar
   const handleDelete = async () => {
     if (!selectedProfessor) return;
 
     try {
       console.log('🗑️ DELETANDO ID:', selectedProfessor.id);
 
-      await axios.delete(
-        `${API_BASE}/users/${selectedProfessor.id}`,
+      await api.delete(
+        `/api/users/${selectedProfessor.id}`,
         authHeader
       );
 
@@ -125,7 +118,7 @@ export default function ProfessoresPage() {
 
       Alert.alert('Sucesso', 'Professor deletado com sucesso');
     } catch (err: any) {
-      console.error('❌ ERRO DELETE', err?.response?.data || err);
+      console.error('ERRO DE DELETAR', err?.response?.data || err);
       Alert.alert(
         'Erro',
         err?.response?.data?.error || 'Erro ao deletar professor'
@@ -145,7 +138,6 @@ export default function ProfessoresPage() {
     <View style={{ flex: 1, backgroundColor: '#d5e5f6ff' }}>
       {!selectedProfessor && !isCreating ? (
         <>
-          {/* HEADER */}
           <View style={{ 
             flexDirection: 'row', 
             alignItems: 'center', 
@@ -183,7 +175,6 @@ export default function ProfessoresPage() {
             </Pressable>
           </View>
 
-          {/* LISTA DE PROFESSORES - usando o mesmo padrão da página de posts */}
           <FlatList
             data={professores}
             keyExtractor={(item) => item.id.toString()}
@@ -241,7 +232,7 @@ export default function ProfessoresPage() {
             maxWidth: 500,
             alignSelf: 'center' 
           }}>
-            {/* HEADER com título e lixeira - igual ao da página de posts */}
+
             <View style={{ 
               flexDirection: 'row', 
               justifyContent: 'space-between', 

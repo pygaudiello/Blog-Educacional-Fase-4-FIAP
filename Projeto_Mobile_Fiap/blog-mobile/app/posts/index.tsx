@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { api } from '@/src/api/api';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import { useAuth } from '../../src/contexts/AuthContext';
 
 import { styles } from '../../src/theme/styles';
@@ -19,20 +19,10 @@ export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  // No topo do arquivo, adicione:
 
-
-// Depois das imports, adicione:
-const API_BASE = Platform.select({
-  android: 'http://10.0.2.2:4000/api',
-  ios: 'http://localhost:4000/api',
-  default: 'http://192.168.1.40:4000/api',
-})!;
-
-// E na função fetchPosts:
 const fetchPosts = async () => {
   try {
-    const res = await axios.get(`${API_BASE}/posts`, { 
+    const res = await api.get(`/api/posts`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -44,14 +34,17 @@ const fetchPosts = async () => {
   }
 };
 
-  // Recarrega posts toda vez que a tela ganha foco
+  // Recarrega posts
   useFocusEffect(
-    useCallback(() => {
+  useCallback(() => {
+    if (token) {
       fetchPosts();
-    }, [])
-  );
+    }
+  }, [token])
+);
 
-  // Filtra posts quando o usuário digita na barra de busca
+
+  // Filtra posts
   useEffect(() => {
     setFilteredPosts(
       posts.filter(
@@ -73,7 +66,6 @@ const fetchPosts = async () => {
           style={styles.searchInput}
         />
 
-        {/* Controles extras só para professores */}
         {user?.role === 'teacher' && (
           <View style={styles.teacherControls}>
             <Pressable
@@ -108,7 +100,6 @@ const fetchPosts = async () => {
         )}
       </View>
 
-      {/* Lista de posts */}
       <FlatList
         data={filteredPosts}
         keyExtractor={(item) => item.id.toString()}

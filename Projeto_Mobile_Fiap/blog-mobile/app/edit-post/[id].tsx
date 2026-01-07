@@ -1,5 +1,6 @@
+import { api } from '@/src/api/api';
 import { MaterialIcons } from '@expo/vector-icons';
-import axios, { isAxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, FlatList, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -23,9 +24,7 @@ export default function EditPostsPage() {
   const [content, setContent] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const BASE_URL = 'http://192.168.1.40:4000/api/posts';
-
-  // ---------------- VERIFICAR TOKEN ----------------
+  // Verificar token
   useEffect(() => {
     console.log('=== DEBUG TOKEN ===');
     console.log('Token existe?', !!token);
@@ -34,12 +33,12 @@ export default function EditPostsPage() {
     console.log('Role:', user?.role);
   }, [token, user]);
 
-  // ---------------- BUSCAR POSTS ----------------
+  // Posts
   const fetchPosts = useCallback(async () => {
     try {
       console.log('Buscando posts...');
       
-      const res = await axios.get(BASE_URL, {
+      const res = await api.get('/api/posts', {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -57,7 +56,6 @@ export default function EditPostsPage() {
     fetchPosts();
   }, [fetchPosts]);
 
-  // ---------------- SELECIONAR POST PARA EDITAR ----------------
   const handleEditSelect = (post: Post) => {
     setEditingPost(post);
     setTitle(post.title);
@@ -65,14 +63,13 @@ export default function EditPostsPage() {
     setShowDeleteConfirm(false);
   };
 
-  // ---------------- ATUALIZAR POST ----------------
   const handleUpdate = async () => {
     if (!editingPost) return;
     if (!title || !content) return Alert.alert('Erro', 'Preencha todos os campos');
 
     try {
-      const res = await axios.put(
-        `${BASE_URL}/${editingPost.id}`,
+      const res = await api.put(
+        `/api/posts/${editingPost.id}`,
         { title, content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -91,7 +88,6 @@ export default function EditPostsPage() {
     }
   };
 
-  // ---------------- DELETAR POST (VERSÃO COM CONFIRMAÇÃO VISUAL) ----------------
   const handleDeleteClick = () => {
     if (!editingPost) return;
     
@@ -99,11 +95,9 @@ export default function EditPostsPage() {
     console.log('Post ID:', editingPost.id);
     console.log('Título:', editingPost.title);
     
-    // Em vez de usar Alert.alert, vamos mostrar uma confirmação visual
     setShowDeleteConfirm(true);
   };
 
-  // ---------------- CONFIRMAR DELEÇÃO ----------------
   const confirmDelete = async () => {
     if (!editingPost) return;
     
@@ -111,10 +105,10 @@ export default function EditPostsPage() {
     console.log('Tentando deletar post ID:', editingPost.id);
     
     try {
-      const response = await axios.delete(
-        `${BASE_URL}/${editingPost.id}`,
+      const response = await api.delete(
+        `/api/posts/${editingPost.id}`,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
@@ -126,7 +120,6 @@ export default function EditPostsPage() {
       console.log('Dados:', response.data);
       
       if (response.status === 200) {
-        // Remove do estado local
         setPosts(prev => prev.filter(p => p.id !== editingPost.id));
         
         // Reseta os estados de edição e VOLTA PARA A LISTA
@@ -136,8 +129,7 @@ export default function EditPostsPage() {
         setShowDeleteConfirm(false);
 
         Alert.alert('Sucesso', 'Post deletado com sucesso!');
-        
-        // Recarrega a lista
+      
         fetchPosts();
       }
       
@@ -164,18 +156,15 @@ export default function EditPostsPage() {
         Alert.alert('Erro', 'Erro desconhecido: ' + err.message);
       }
       
-      // Recarrega os posts
       fetchPosts();
     }
   };
 
-  // ---------------- CANCELAR DELEÇÃO ----------------
   const cancelDelete = () => {
     console.log('Deleção cancelada pelo usuário');
     setShowDeleteConfirm(false);
   };
 
-  // ---------------- CANCELAR EDIÇÃO ----------------
   const handleCancel = () => {
     setEditingPost(null);
     setTitle('');
@@ -183,12 +172,12 @@ export default function EditPostsPage() {
     setShowDeleteConfirm(false);
   };
 
-  // ---------------- TESTE DIRETO DA API ----------------
+  // Tester direto da Api, jaja comento
   const testApiConnection = async () => {
     try {
       console.log('=== TESTANDO CONEXÃO COM API ===');
       
-      const testResponse = await axios.get(BASE_URL, {
+      const testResponse = await api.get('/api/posts', {
         headers: { Authorization: `Bearer ${token}` },
       });
       
@@ -196,7 +185,7 @@ export default function EditPostsPage() {
       
       if (editingPost) {
         try {
-          const postResponse = await axios.get(`${BASE_URL}/${editingPost.id}`, {
+          const postResponse = await api.get(`/api/posts/${editingPost.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log('Post encontrado:', postResponse.data.title);
@@ -218,33 +207,31 @@ export default function EditPostsPage() {
     );
   }
 
-  // ---------------- RENDER ----------------
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: '#d5e5f6ff' }}
-      contentContainerStyle={{ 
-        paddingVertical: 20, 
+      contentContainerStyle={{
+        paddingVertical: 20,
         paddingHorizontal: 16,
-        flexGrow: 1 
+        flexGrow: 1
       }}
       keyboardShouldPersistTaps="handled"
     >
       {!editingPost ? (
         <>
-          {/* HEADER */}
-          <View style={{ 
-            flexDirection: 'row', 
-            alignItems: 'center', 
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
             marginBottom: 16,
             justifyContent: 'space-between'
           }}>
             <Pressable
               onPress={() => router.back()}
-              style={{ 
-                paddingVertical: 8, 
-                paddingHorizontal: 12, 
-                backgroundColor: '#007aff', 
-                borderRadius: 6 
+              style={{
+                paddingVertical: 8,
+                paddingHorizontal: 12,
+                backgroundColor: '#007aff',
+                borderRadius: 6
               }}
             >
               <Text style={{ color: 'white', fontSize: 16 }}>Voltar</Text>
@@ -259,7 +246,7 @@ export default function EditPostsPage() {
                 setLoading(true);
                 fetchPosts();
               }}
-              style={{ 
+              style={{
                 padding: 8,
                 borderRadius: 6
               }}
@@ -268,9 +255,8 @@ export default function EditPostsPage() {
             </Pressable>
           </View>
 
-          {/* LISTA DE POSTS */}
           {posts.length === 0 ? (
-            <View style={{ 
+            <View style={{
               flex: 1, 
               justifyContent: 'center', 
               alignItems: 'center', 
@@ -341,7 +327,7 @@ export default function EditPostsPage() {
           maxWidth: 500,
           marginTop: 20 
         }}>
-          {/* TÍTULO + LIXEIRA */}
+
           <View style={{ 
             flexDirection: 'row', 
             justifyContent: 'space-between', 
@@ -376,7 +362,6 @@ export default function EditPostsPage() {
             </Pressable>
           </View>
 
-          {/* CONFIRMAÇÃO DE DELEÇÃO (VISUAL) */}
           {showDeleteConfirm && (
             <View style={{
               backgroundColor: '#ffebee',

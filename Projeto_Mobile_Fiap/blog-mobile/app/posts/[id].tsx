@@ -1,5 +1,5 @@
+import { api } from '@/src/api/api';
 import { colors } from '@/src/theme/colors';
-import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -51,7 +51,7 @@ export default function PostDetailPage() {
     
     try {
       setLoading(true);
-      const res = await axios.get(`http://192.168.1.40:4000/api/posts/${id}`, {
+      const res = await api.get(`/api/posts/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -79,8 +79,8 @@ export default function PostDetailPage() {
     try {
       setSubmittingComment(true);
       
-      await axios.post(
-        `http://192.168.1.40:4000/api/posts/${id}/comments`,
+      await api.post(
+        `/api/posts/${id}/comments`,
         {
           author: user.username || 'Anônimo',
           content: newComment
@@ -114,8 +114,8 @@ export default function PostDetailPage() {
     try {
       // TENTAR DIFERENTES ROTAS BASEADO NA SUA API
       const routesToTry = [
-        `http://192.168.1.40:4000/api/comments/${commentToDelete}`,
-        `http://192.168.1.40:4000/api/posts/${id}/comments/${commentToDelete}`
+        `/api/comments/${commentToDelete}`,
+        `/api/posts/${id}/comments/${commentToDelete}`
       ];
       
       let success = false;
@@ -123,7 +123,7 @@ export default function PostDetailPage() {
       
       for (const url of routesToTry) {
         try {
-          await axios.delete(url, {
+          await api.delete(url, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

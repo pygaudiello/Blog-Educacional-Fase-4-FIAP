@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { router } from 'expo-router';
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { api } from '../src/api/api';
 
 import { useAuth } from '../src/contexts/AuthContext';
 import { colors } from '../src/theme/colors';
@@ -33,8 +33,8 @@ export default function Login() {
     setLoading(true);
     
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/auth/login',
+      const response = await api.post(
+        '/api/auth/login',
         {
           username,
           password,
@@ -47,14 +47,13 @@ export default function Login() {
       const decoded = jwtDecode<JwtPayload>(token);
       console.log(decoded);
       
-      // salva no contexto
       login(token, {
         id: decoded.id,
         username: decoded.username,
         role: decoded.role,
       });
 
-      // redireciona conforme o papel (ajuste seguro)
+      // redireciona conforme o papel
         if (decoded.role === 'teacher') {
         router.replace('/posts');
         return; // evita cair no /posts por engano

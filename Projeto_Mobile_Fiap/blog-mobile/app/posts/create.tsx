@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { api } from '@/src/api/api';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -21,8 +21,8 @@ export default function CreatePost() {
     }
 
     try {
-      await axios.post(
-        'http://localhost:4000/api/posts',
+      await api.post(
+        '/api/posts',
         {
           title,
           content,
