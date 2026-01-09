@@ -240,6 +240,17 @@ Abaixo estão algumas imagens que ilustram o funcionamento da aplicação mobile
 
 ---
 
+## Dificuldades Encontradas
+
+Durante o desenvolvimento do projeto, algumas dificuldades foram identificadas e solucionadas ao longo do processo, contribuindo para o amadurecimento técnico da solução:
+* Configuração de autenticação com JWT: ajustes foram necessários para garantir o correto fluxo de autenticação entre backend e aplicação mobile, especialmente no envio e validação do token nas requisições protegidas.
+* Controle de permissões por perfil: a implementação das regras de autorização (professor versus aluno) exigiu atenção na definição de middlewares e validações no backend, garantindo segurança e coerência nas ações permitidas.
+* Integração entre backend e aplicação mobile: foi necessário alinhar corretamente rotas, payloads e tratamento de erros para assegurar uma comunicação estável entre as camadas.
+* Configuração de ambiente e rede: durante os testes em dispositivos físicos, houve a necessidade de configurar corretamente o endereço IP da máquina para permitir o acesso da aplicação mobile à API local.
+Esses desafios foram superados por meio de análise, testes e ajustes incrementais, resultando em uma aplicação funcional e alinhada aos requisitos propostos.
+
+---
+
 ## Considerações Finais
 
 O projeto atende aos requisitos propostos no Tech Challenge da Fase 4, demonstrando integração entre múltiplas camadas da aplicação, autenticação segura e consumo de API em diferentes plataformas. O desenvolvimento priorizou organização, clareza de arquitetura e boas práticas de desenvolvimento.
