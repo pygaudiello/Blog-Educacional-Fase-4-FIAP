@@ -11,7 +11,6 @@ A aplicação permite que **professores** realizem login e gerenciem publicaçõ
 ## Tecnologias Utilizadas
 
 ### Backend
-
 * Node.js
 * Express
 * Sequelize
@@ -22,7 +21,6 @@ A aplicação permite que **professores** realizem login e gerenciem publicaçõ
 * Dotenv
 
 ### Mobile
-
 * Expo
 * React Native
 * TypeScript
