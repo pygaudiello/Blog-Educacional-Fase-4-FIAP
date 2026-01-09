@@ -3,11 +3,7 @@ const router = express.Router();
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 
-/**
- * =========================
- * Buscar apenas professores
- * =========================
- */
+//  Buscar apenas professores
 router.get('/teachers', async (req, res) => {
   try {
     const teachers = await User.findAll({
@@ -21,11 +17,7 @@ router.get('/teachers', async (req, res) => {
   }
 });
 
-/**
- * =========================
- * Buscar apenas alunos
- * =========================
- */
+// Buscar apenas alunos
 router.get('/students', async (req, res) => {
   try {
     const students = await User.findAll({
@@ -39,11 +31,7 @@ router.get('/students', async (req, res) => {
   }
 });
 
-/**
- * =========================
- * Buscar todos os usuários
- * =========================
- */
+// Buscar todos os usuários
 router.get('/', async (req, res) => {
   try {
     const users = await User.findAll();
@@ -54,11 +42,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * =========================
- * Criar usuário
- * =========================
- */
+// Criar usuário
 router.post('/', async (req, res) => {
   try {
     const { username, password, role } = req.body;

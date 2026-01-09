@@ -4,7 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
-const SECRET = process.env.JWT_SECRET;
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET não definido no .env');
+}
+
 
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;

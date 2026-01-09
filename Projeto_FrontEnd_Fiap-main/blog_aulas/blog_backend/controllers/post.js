@@ -1,4 +1,6 @@
-const { Post, Comment, User, Op } = require('../models'); 
+const { Post, Comment, User } = require('../models');
+const { Op } = require('sequelize');
+
 
 // listar posts (público) com busca q
 exports.getPosts = async (req, res) => {
@@ -48,7 +50,8 @@ exports.createPost = async (req, res) => {
             content,
             author: req.user.username,
             userId: req.user.id
-        });
+            });
+
 
         res.status(201).json(post);
     } catch (err) {
