@@ -101,7 +101,7 @@ O servidor será iniciado na porta **4000**.
 ```bash
 cd Fase-4-Pos-Tech-Fiap
 cd Projeto_Mobile_Fiap
-cd blog_mobile
+cd blog-mobile
 ```
 
 ### Instalar dependências
@@ -138,6 +138,7 @@ Exemplo:
 ```
 http://192.168.0.10:4000
 ```
+Obvervação: Coloque no formato 'https://seu.ip.aqui:porta', sugerimos a porta 4000.
 
 ### Executar aplicação
 
