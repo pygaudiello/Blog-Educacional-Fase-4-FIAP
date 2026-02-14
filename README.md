@@ -106,6 +106,7 @@ cd Projeto_Mobile_Fiap
 
 ```bash
 npm install
+npm install expo
 npm install axios
 npm install @react-navigation/native
 npm install @react-navigation/native-stack
