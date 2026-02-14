@@ -74,6 +74,7 @@ cd blog_backend
 ```bash
 npm install
 npm install nodemon --save-dev
+npm audit fix --force
 ```
 
 ### Criar arquivo de ambiente
@@ -100,6 +101,7 @@ O servidor será iniciado na porta **4000**.
 ```bash
 cd Fase-4-Pos-Tech-Fiap
 cd Projeto_Mobile_Fiap
+cd blog_mobile
 ```
 
 ### Instalar dependências
@@ -111,6 +113,7 @@ npm install axios
 npm install @react-navigation/native
 npx expo install react-dom react-native-web
 npm install @react-navigation/native-stack
+npx expo install react-dom react-native-web @expo/metro-runtime
 npx expo install react-native-screens react-native-safe-area-context
 npm install jwt-decode
 npm install @expo/vector-icons
