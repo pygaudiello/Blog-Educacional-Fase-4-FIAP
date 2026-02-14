@@ -144,8 +144,8 @@ npx expo start -c
 
 A aplicação pode ser acessada via:
 
-* Navegador (Web) -> Se for este caso e não apareceu um link web, aperte w após rodar o ```npx expo start -c``` e entre no link sugerido. No meu caso apareceu como ``` › Web is waiting on http://localhost:8081```
-* Expo Go (QR Code)
+* Navegador (Web) -> Se você for utilizar esta opção e ainda não apareceu um link web, aperte w após rodar o ```npx expo start -c``` e entre no link sugerido. No meu caso apareceu como ``` › Web is waiting on http://localhost:8081```
+* Expo Go (QR Code) -> Se você for utilizar esta opção no terminal terá um QR Code para você escanear com o aplicativo do Expo Go instalado
 * Emulador Android
 
 ---
